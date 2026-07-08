@@ -1,7 +1,7 @@
 # Playwright Demo — saucedemo.com
 
 一个用 **Playwright + TypeScript** 写的端到端（E2E）自动化测试示例，覆盖电商核心链路：
-**登录 → 加购 → 结算**。采用 **Page Object 模式**，贴合企业级工程实践，作为个人测试能力的公开证明。
+**登录 → 加购 → 结算**。采用 **Page Object 模式**，贴合企业级工程实践。
 
 ## 覆盖场景
 
