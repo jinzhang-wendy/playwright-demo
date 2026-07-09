@@ -19,6 +19,14 @@ export class InventoryPage {
     await this.page.locator(`[data-test="add-to-cart-${itemSlug}"]`).click();
   }
 
+  /** 按商品 slug 读取其在商品列表中的 UI 价格文本（如 "$29.99"），用于和 DB 期望价对比 */
+  async getItemPrice(itemSlug: string): Promise<string> {
+    const item = this.page.locator('[data-test="inventory-item"]', {
+      has: this.page.locator(`[data-test="add-to-cart-${itemSlug}"]`),
+    });
+    return (await item.locator('.inventory_item_price').textContent())?.trim() ?? '';
+  }
+
   async goToCart() {
     await this.cartLink.click();
   }
