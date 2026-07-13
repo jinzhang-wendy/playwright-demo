@@ -6,12 +6,13 @@ pipeline {
     agent any
 
     // 触发器（Pipeline as Code）：
-    // ① cron —— 每天凌晨 2 点自动跑一遍回归（H=哈希分钟，避免整点洪峰）
-    // ② githubPush —— GitHub 的 push 事件经 webhook 自动触发本构建
-    //    （需在 GitHub 仓库配置 Webhook 指向 <公网地址>/github-webhook/，见部署文档）
+    // cron —— 每天凌晨 2 点自动跑一遍 E2E 回归（H=哈希分钟，避免整点洪峰）
+    // 说明：GitHub push 自动触发（webhook）暂未启用——
+    //       本地 Jenkins 在 localhost，暴露到公网有安全风险；
+    //       等有服务器 / 稳定公网环境再上。如需"push 即构建"且不暴露，
+    //       可在 triggers 改用 pollSCM('H/5 * * * *')（Jenkins 每5分钟主动轮询，零暴露）。
     triggers {
         cron('H 2 * * *')
-        githubPush()
     }
 
     environment {
