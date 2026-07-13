@@ -5,6 +5,15 @@
 pipeline {
     agent any
 
+    // 触发器（Pipeline as Code）：
+    // ① cron —— 每天凌晨 2 点自动跑一遍回归（H=哈希分钟，避免整点洪峰）
+    // ② githubPush —— GitHub 的 push 事件经 webhook 自动触发本构建
+    //    （需在 GitHub 仓库配置 Webhook 指向 <公网地址>/github-webhook/，见部署文档）
+    triggers {
+        cron('H 2 * * *')
+        githubPush()
+    }
+
     environment {
         // 用本机系统级 Node（Apple Silicon 上 Homebrew 装在 /opt/homebrew/bin）
         PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
