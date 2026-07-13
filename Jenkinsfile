@@ -14,9 +14,10 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // 公开仓库，无需凭据即可 clone
+                // 用 SSH 拉取（凭据 github-ssh 已在 Jenkins 中配置）
                 git branch: 'main',
-                    url: 'https://github.com/jinzhang-wendy/playwright-demo.git'
+                    url: 'git@github.com:jinzhang-wendy/playwright-demo.git',
+                    credentialsId: 'github-ssh'
                 sh 'echo "== 拉取完成，工作区内容：==" && ls -la'
             }
         }
@@ -45,18 +46,13 @@ pipeline {
 
     post {
         always {
-            // 把 Playwright 的 HTML 报告挂到 Jenkins 构建页面
-            publishHTML(target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: 'playwright-report',
-                reportFiles: 'index.html',
-                reportName: 'Playwright HTML Report'
-            ])
-            // 失败截图 / trace 也一并留存
+            echo '== 构建结束，归档报告与失败截图（Jenkins 内置步骤，无需额外插件）=='
+            // 内置归档，把报告和失败截图留存在构建页 Artifacts 里
             archiveArtifacts artifacts: 'playwright-report/**, test-results/**',
                              allowEmptyArchive: true
+        }
+        success {
+            echo '✅ 全部 E2E 测试通过'
         }
     }
 }
